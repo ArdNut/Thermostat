@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // Thermostat.ino
 //
-// Created for "Arduino in a Nutshell", 2015, J. M. Hughes
+// Created for "Arduino: A Technical Reference", 2015, J. M. Hughes
 // Chapter 12
 //-------------------------------------------------------------------
 
@@ -28,11 +28,13 @@ void setup()
 
     lcd->clear();
 
+    // Check the RTC
     if (rtc->haltRTC())
         lcd->print("Clock stopped!");
     else
         lcd->print("Clock working.");
 
+    // See if RTC write is enabled
     lcd->setCursor(0,1);
     if (rtc->writeEN())
         lcd->print("Write allowed.");
@@ -41,7 +43,7 @@ void setup()
 
     delay (2000);
 
-    // Setup time library
+    // Setup time library with RTC
     lcd->clear();
     lcd->print("RTC Sync");
     setSyncProvider(rtc->get);          // the function to get the time from the RTC
@@ -55,8 +57,8 @@ void setup()
 
     TitleDisp("Initialization", "complete", 1000);
 
-    curr_screen = 0;
-    Screen1();
+    gv_curr_screen = 0;
+    Screen1();      // Show screen 1
     disptime = millis();
 }
 
@@ -66,20 +68,20 @@ void loop()
     // Get current date and time from RTC
     RTCUpdate();
 
-    if (input_active) {
+    if (gv_input_active) {
         HandleInput();
     }
     else {
         // Toggle between screen 1 and screen 2
         if ((millis() - disptime) > MAX_DISP_TIME) {
-            if (curr_screen) {
+            if (gv_curr_screen) {
                 Screen1();
-                curr_screen = 0;
+                gv_curr_screen = 0;
                 disptime = millis();
             }
             else {
                 Screen2();
-                curr_screen = 1;
+                gv_curr_screen = 1;
                 disptime = millis();
             }
         }

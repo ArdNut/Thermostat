@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // tstat_iface.h
 //
-// Created for "Arduino in a Nutshell", 2015, J. M. Hughes
+// Created for "Arduino: A Technical Reference", 2015, J. M. Hughes
 // Chapter 12
 //-------------------------------------------------------------------
 

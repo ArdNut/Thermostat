@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // tstat_lcd.cpp
 //
-// Created for "Arduino in a Nutshell", 2015, J. M. Hughes
+// Created for "Arduino: A Technical Reference", 2015, J. M. Hughes
 // Chapter 12
 //-------------------------------------------------------------------
 
@@ -12,6 +12,7 @@
 #include "tstat_lcd.h"
 #include "tstat_util.h"
 
+// Display two rows of text, dwell for dtime milliseconds
 void TitleDisp(char *msg1, char *msg2, int dtime)
 {
     lcd->clear();
@@ -26,6 +27,7 @@ void TitleDisp(char *msg1, char *msg2, int dtime)
 }
 
 
+// Main status screen
 void Screen1()
 {
     lcd->clear();
@@ -35,17 +37,17 @@ void Screen1()
     lcd->print("T:");
 
     lcd->setCursor(2,0);
-    lcd->print(tint_curr);
+    lcd->print(gv_tint_curr);
 
-    if (tint_curr < 100)
+    if (gv_tint_curr < 100)
         lcd->setCursor(4,0);
     else
         lcd->setCursor(5,0);
 
-    if (tint_curr > tint_last) {
+    if (gv_tint_curr > gv_tint_last) {
         lcd->print("^");
     }
-    else if (tint_curr == tint_last) {
+    else if (gv_tint_curr == gv_tint_last) {
         lcd->print("=");
     }
     else {
@@ -57,17 +59,17 @@ void Screen1()
     lcd->print("H:");
 
     lcd->setCursor(8,0);
-    lcd->print(hint_curr);
+    lcd->print(gv_hint_curr);
 
-    if (hint_curr < 100)
+    if (gv_hint_curr < 100)
         lcd->setCursor(10,0);
     else
         lcd->setCursor(11,0);
 
-    if (hint_curr > hint_last) {
+    if (gv_hint_curr > gv_hint_last) {
         lcd->print("^");
     }
-    else if (hint_curr == hint_last) {
+    else if (gv_hint_curr == gv_hint_last) {
         lcd->print("=");
     }
     else {
@@ -78,24 +80,24 @@ void Screen1()
     lcd->setCursor(13,0);
     lcd->print("M:");
     lcd->setCursor(15,0);
-    lcd->print(mode_set);
+    lcd->print(gv_mode_set);
 
     // outside temperature
     lcd->setCursor(0,1);
     lcd->print("E:");
 
     lcd->setCursor(2,1);
-    lcd->print(text_curr);
+    lcd->print(gv_text_curr);
 
-    if (text_curr < 100)
+    if (gv_text_curr < 100)
         lcd->setCursor(4,1);
     else
         lcd->setCursor(5,1);
 
-    if (text_curr > text_last) {
+    if (gv_text_curr > gv_text_last) {
         lcd->print("^");
     }
-    else if (text_curr == text_last) {
+    else if (gv_text_curr == gv_text_last) {
         lcd->print("=");
     }
     else {
@@ -107,17 +109,17 @@ void Screen1()
     lcd->print("H:");
 
     lcd->setCursor(8,1);
-    lcd->print(hext_curr);
+    lcd->print(gv_hext_curr);
 
-    if (hext_curr < 100)
+    if (gv_hext_curr < 100)
         lcd->setCursor(10,1);
     else
         lcd->setCursor(11,1);
 
-    if (hext_curr > hext_last) {
+    if (gv_hext_curr > gv_hext_last) {
         lcd->print("^");
     }
-    else if (hext_curr == hext_last) {
+    else if (gv_hext_curr == gv_hext_last) {
         lcd->print("=");
     }
     else {
@@ -128,34 +130,34 @@ void Screen1()
     lcd->setCursor(13,1);
     lcd->print("P:");
     lcd->setCursor(15,1);
-    lcd->print(prof_set);
+    lcd->print(gv_prof_set);
 }
 
-
+// Alternate main screen
 void Screen2()
 {
     lcd->clear();
 
     lcd->setCursor(0,0);
-    lcd->print(year_val);
+    lcd->print(gv_year_val);
 
     lcd->setCursor(5,0);
-    lcd->print(mon_val);
+    lcd->print(gv_mon_val);
 
     lcd->setCursor(9,0);
-    lcd->print(day_val);
+    lcd->print(gv_day_val);
 
     // current operation mode
     lcd->setCursor(13,0);
     lcd->print("M:");
     lcd->setCursor(15,0);
-    lcd->print(mode_set);
+    lcd->print(gv_mode_set);
 
     // print current time
     lcd->setCursor(0,1);
-    lcd->print(curr_time);
+    lcd->print(gv_curr_time);
 
-    if (prof_set) {
+    if (gv_prof_set) {
         lcd->setCursor(8,1);
         lcd->print("END:");
         lcd->setCursor(12,1);
