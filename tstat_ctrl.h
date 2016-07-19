@@ -8,7 +8,14 @@
 #ifndef TSTATCTRL_H
 #define TSTATCTRL_H
 
+int convrange(double rangeC);
+int convtemp(double tempC);
+
 void GetTemps();
+
+void setRelay(int ry, bool state);
+
+void CheckProfile();
 void SystemControl();
 
 #endif

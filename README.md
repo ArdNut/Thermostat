@@ -1,11 +1,18 @@
 # Thermostat
 Source code for the thermostat from "Arduino: A Technical Reference".
 
-This is the least polished of the applications. The prototype code will be cleaned up, re-tested, and moved over shortly.
-
 Created for chapter 12 of "Arduino: A Technical Reference" by J. M. Hughes
 
 Copyight 2015-2016 John M. Hughes
+
+This is the least polished of the applications. It is also the most
+complex. It still needs some rough edges smoothed down.
+
+## Update 18 July 2016
+
+I am continuing to work on the code and get it into its final form. The
+last thing to work out is the profile handling. The state logic could
+also use some attention.
 
 ---
 O'Reilly appreciates, but does not require, attribution. An attribution usually

@@ -8,6 +8,11 @@
 #ifndef TSTATIF_H
 #define TSTATIF_H
 
-void HandleInput();
+bool HandleInput();
+bool processInput();
+
+void getScreen3();
+void getScreen4();
+void getScreen5();
 
 #endif
