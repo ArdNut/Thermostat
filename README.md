@@ -32,6 +32,14 @@ All you need to do is download the source as a zip file (there is a button
 that will do that for you), and then unzip it into a directory called
 "Thermostat" in your Arduino "sketchbook" directory.
 
+### Required libraries
+
+For this project you will need the following additional libraries:
+
+- DS1302RTC library by Timur Maksimov
+- ClickEncoder library from karl@pitrich.com
+- The DHT22 library by Ben Adams
+
 Refer to Chapter 12 for instructions on how to test the code to verify that
 it is working correctly with the hardware.
 
