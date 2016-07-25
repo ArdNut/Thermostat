@@ -61,11 +61,11 @@ Thermostat.ino, in the funciton LCDbutton. I elected to use discrete range
 tests rather than the FOR loop approach taken by others. The buttons are
 assigned as follows:
 
- SEL    System Reset (not an MCU reset)
- UP     + 0.5C temp adjust
- DOWN   - 0.5C temp adjust
- LEFT   -1% humidity adjust
- RIGHT  +1% humidity adjust
+ * SEL    System Reset (not an MCU reset)
+ * UP     + 0.5C temp adjust
+ * DOWN   - 0.5C temp adjust
+ * LEFT   -1% humidity adjust
+ * RIGHT  +1% humidity adjust
 
 When any of the four adjustment buttons are pressed the LCD display time-out
 is reset and the external DHT22 values display (when it's enabled) is replaced
