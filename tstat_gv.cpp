@@ -56,6 +56,8 @@ bool        gv_inputchange  = false;    // param change flag
 bool        gv_params_changed = false;  // change indicator flag
 int         gv_pchange_time = 0;        // change ind show time
 
+bool        gv_aux_button = false;
+
 uint16_t    gv_year_val   = 2016;       // year
 uint8_t     gv_mon_num    = 1;          // month number [1..12]
 char        gv_mon_val[4] = {"NUL"};    // month name
@@ -76,23 +78,27 @@ double      gv_temp_set  = DEF_TEMP_SET;    // Temperature set point in C
 double      gv_hyst_set  = DEF_HYST_SET;    // Hysteresis range in C
 uint8_t     gv_over_time = DEF_OVERTM;      // Override time [0..255]
 
-uint8_t     gv_mode_set  = DEF_MODE;        // Operation mode
-uint8_t     gv_prof_set  = DEF_PROF;        // Profile ID
+bool        gv_show_adj  = false;       // control adj values display
+double      gv_temp_adj  = 0;           // Temp adjustment in C
+int         gv_hum_adj   = 0;           // Humidity adjustment in %RH
+
+uint8_t     gv_mode_set  = DEF_MODE;    // Operation mode
+uint8_t     gv_prof_set  = DEF_PROF;    // Profile ID
 uint8_t     gv_prof_get  = 0;           // Profile edit ID
 
 double      gv_tint_curr = 0.0;         // Interior temperature in C
 double      gv_tint_last = 0.0;         // Interior temperature in C
 
-uint8_t     gv_hint_curr = 0;           // Interior humidity
-uint8_t     gv_hint_last = 0;           // Interior humidity
+int         gv_hint_curr = 0;           // Interior humidity
+int         gv_hint_last = 0;           // Interior humidity
 
 bool        gv_ext_sense = false;       // true if ext DHT22 detected
 
 double      gv_text_curr = 0.0;         // External temperature in C
 double      gv_text_last = 0.0;         // External temperature in C
 
-uint8_t     gv_hext_curr = 0;           // External humidity
-uint8_t     gv_hext_last = 0;           // External humidity
+int         gv_hext_curr = 0;           // External humidity
+int         gv_hext_last = 0;           // External humidity
 
 uint8_t     gv_curr_scale = SCALE_F;    // Temp display scale
 

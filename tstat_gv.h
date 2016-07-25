@@ -51,6 +51,8 @@ extern bool          gv_inputchange;
 extern bool          gv_params_changed;
 extern int           gv_pchange_time;
 
+extern bool          gv_aux_button;
+
 extern uint16_t      gv_year_val;
 extern uint8_t       gv_mon_num;
 extern char          gv_mon_val[4];
@@ -71,6 +73,10 @@ extern double        gv_temp_set;
 extern double        gv_hyst_set;
 extern uint8_t       gv_over_time;
 
+extern bool          gv_show_adj;
+extern double        gv_temp_adj;
+extern int           gv_hum_adj;
+
 extern uint8_t       gv_mode_set;
 extern uint8_t       gv_prof_set;
 extern uint8_t       gv_prof_get;
@@ -78,16 +84,16 @@ extern uint8_t       gv_prof_get;
 extern double        gv_tint_curr;
 extern double        gv_tint_last;
 
-extern uint8_t       gv_hint_curr;
-extern uint8_t       gv_hint_last;
+extern int           gv_hint_curr;
+extern int           gv_hint_last;
 
 extern bool          gv_ext_sense;
 
 extern double        gv_text_curr;
 extern double        gv_text_last;
 
-extern uint8_t       gv_hext_curr;
-extern uint8_t       gv_hext_last;
+extern int           gv_hext_curr;
+extern int           gv_hext_last;
 
 extern uint8_t       gv_curr_scale;
 

@@ -80,7 +80,7 @@ void TitleDisp(char *msg1, char *msg2, int dtime)
 // Main status screen
 // The position of the '=', 'V', and '^' chars will automatically shift
 // over if the temp or hum values are >= 100
-void Screen1()
+void Screen1(bool showadj)
 {
     lcd->clear();
 
@@ -131,49 +131,61 @@ void Screen1()
     // current operation mode
     showMode(12, 0);
 
-    if (gv_ext_sense) {
-        // outside temperature
-        lcd->setCursor(0,1);
-        lcd->print("E:");
+    lcd->setCursor(0,1);
+    lcd->print("             ");
 
-        lcd->setCursor(2,1);
-        lcd->print(convtemp((double) gv_text_curr));
+    if (showadj) {
+        lcd->setCursor(2,1);        // TESTING
+        lcd->print(gv_temp_adj);    // TESTING
 
-        if (gv_text_curr < 100)
-            lcd->setCursor(4,1);
-        else
-            lcd->setCursor(5,1);
+        lcd->setCursor(8,1);        // TESTING
+        lcd->print(gv_hum_adj);     // TESTING
+    }
+    else {
+        if (gv_ext_sense) {
+            // outside temperature
+            lcd->setCursor(0,1);
+            lcd->print("E:");
 
-        if (gv_text_curr > gv_text_last) {
-            lcd->print("^");
-        }
-        else if (gv_text_curr == gv_text_last) {
-            lcd->print("=");
-        }
-        else {
-            lcd->print("v");
-        }
+            lcd->setCursor(2,1);
+            lcd->print(convtemp((double) gv_text_curr));
 
-        // outside humidity
-        lcd->setCursor(6,1);
-        lcd->print("H:");
+            if (gv_text_curr < 100)
+                lcd->setCursor(4,1);
+            else
+                lcd->setCursor(5,1);
 
-        lcd->setCursor(8,1);
-        lcd->print(gv_hext_curr);
+            if (gv_text_curr > gv_text_last) {
+                lcd->print("^");
+            }
+            else if (gv_text_curr == gv_text_last) {
+                lcd->print("=");
+            }
+            else {
+                lcd->print("v");
+            }
 
-        if (gv_hext_curr < 100)
-            lcd->setCursor(10,1);
-        else
-            lcd->setCursor(11,1);
+            // outside humidity
+            lcd->setCursor(6,1);
+            lcd->print("H:");
 
-        if (gv_hext_curr > gv_hext_last) {
-            lcd->print("^");
-        }
-        else if (gv_hext_curr == gv_hext_last) {
-            lcd->print("=");
-        }
-        else {
-            lcd->print("v");
+            lcd->setCursor(8,1);
+            lcd->print(gv_hext_curr);
+
+            if (gv_hext_curr < 100)
+                lcd->setCursor(10,1);
+            else
+                lcd->setCursor(11,1);
+
+            if (gv_hext_curr > gv_hext_last) {
+                lcd->print("^");
+            }
+            else if (gv_hext_curr == gv_hext_last) {
+                lcd->print("=");
+            }
+            else {
+                lcd->print("v");
+            }
         }
     }
 

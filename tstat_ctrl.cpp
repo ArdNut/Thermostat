@@ -36,10 +36,10 @@ void GetTemps()
     // Only update temp and humidity if no read error
     if (gv_dhtchk == DHT_ERROR_NONE) {
         gv_tint_last = gv_tint_curr;
-        gv_tint_curr = DHT->getTemperatureCInt()/10;
+        gv_tint_curr = (DHT->getTemperatureCInt()/10) + gv_temp_adj;
 
         gv_hint_last = gv_hint_curr;
-        gv_hint_curr = (DHT->getHumidityInt())/10;
+        gv_hint_curr = (DHT->getHumidityInt()/10) + gv_hum_adj;
     }
 
     // external sensor goes here

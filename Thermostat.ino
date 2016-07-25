@@ -130,20 +130,27 @@ bool setLocalClock()
 }
 
 
+// Read and decode LCD sheild button inputs
 int LCDbutton()
 {
+    //                        RIGHT, UP, DOWN, LEFT, SELECT
     static int adc_btn_val[5] = {30, 150, 360, 535, 760};
-    int i, input;
+    int input;
 
     input = analogRead(0);
 
-    for (i = 0; i < NUM_LCD_BUTTONS; i++) {
-        if (input < adc_btn_val[i]) {
-            return i;
-        }
-    }
-
-    return LCD_BTN_NONE; // No valid button pressed
+    if (input < adc_btn_val[0])
+        return LCD_BTN_RIGHT;
+    else if (input > adc_btn_val[0] && input <= adc_btn_val[1])
+        return LCD_BTN_UP;
+    else if (input > adc_btn_val[1] && input <= adc_btn_val[2])
+        return LCD_BTN_DOWN;
+    else if (input > adc_btn_val[2] && input <= adc_btn_val[3])
+        return LCD_BTN_LEFT;
+    else if (input > adc_btn_val[4] && input <= adc_btn_val[4])
+        return LCD_BTN_SELECT;
+    else
+        return LCD_BTN_NONE; // No valid button pressed
 }
 
 
@@ -193,16 +200,52 @@ void setup()
     TitleDisp("Initialization", "complete", 1000);
 
     gv_curr_screen = 0;
-    Screen1();      // Show screen 1
+    Screen1(false);      // Show screen 1
     gv_disptime = millis();
     gv_lcd_led_strt = millis();
     gv_disp_active = true;
 }
 
+void displayActive()
+{
+    DispLED(true);
+    lcd->display();
+    gv_disp_active = true;
+    gv_lcd_led_strt = millis();
+}
 
 void loop()
 {
+    // Check the buttons on the LCD shield
     int lcd_button = -1;
+
+    lcd_button = LCDbutton();
+
+    // Only do one button event no matter how long button is held
+    // down. Reset the button flag when button is released.
+
+    if (lcd_button != LCD_BTN_NONE) {
+        displayActive();    // enable display if button pressed
+        if (!gv_aux_button) {
+            gv_aux_button = true;
+            gv_show_adj = true;         // enable adj values display
+            if (lcd_button == LCD_BTN_SELECT) {
+                resetGVData();
+                gv_show_adj = false;    // but not for this
+            }
+            else if (lcd_button == LCD_BTN_UP)
+                gv_temp_adj += 0.5;
+            else if (lcd_button == LCD_BTN_DOWN)
+                gv_temp_adj -= 0.5;
+            else if (lcd_button == LCD_BTN_RIGHT)
+                gv_hum_adj++;
+            else if (lcd_button == LCD_BTN_LEFT)
+                gv_hum_adj--;
+        }
+    }
+    else
+        // if no button active then reset the button flag
+        gv_aux_button = false;
 
     // Update temp and humidity
     GetTemps();
@@ -221,8 +264,6 @@ void loop()
         gv_scr4state   = SC4NULL;
         gv_scr5state   = SC5NULL;
 
-        lcd_button = LCDbutton();
-
         if (lcd_button == LCD_BTN_NONE) {
             if (gv_disp_active) {
                 DispLED(true);
@@ -230,7 +271,7 @@ void loop()
                 // Toggle between screen 1 and screen 2
                 if ((millis() - gv_disptime) > MAX_DISP_TIME) {
                     if (gv_curr_screen) {
-                        Screen1();
+                        Screen1(gv_show_adj);
                         gv_curr_screen = 0;
                         gv_disptime = millis();
                     }
@@ -246,16 +287,10 @@ void loop()
                 }
             }
         }
-        else if (lcd_button == LCD_BTN_UP) {
-            resetGVData();
-        }
     }
     else {
         // Enable display if control input
-        DispLED(true);
-        lcd->display();
-        gv_disp_active = true;
-        gv_lcd_led_strt = millis();
+        displayActive();
     }
 
     // Disable display after idle for MAX_DISP_TIME
@@ -264,6 +299,7 @@ void loop()
             gv_disp_active = false;
             lcd->noDisplay();
             DispLED(false);
+            gv_show_adj = false; // disable adj display if on
         }
     }
 
