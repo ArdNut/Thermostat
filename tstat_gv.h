@@ -65,6 +65,7 @@ extern uint8_t       gv_currmin;
 extern uint8_t       gv_currsec;
 
 extern bool          gv_input_active;
+extern int           gv_lcd_button;
 
 extern uint8_t       gv_curr_screen;
 extern uint8_t       gv_dhtchk;

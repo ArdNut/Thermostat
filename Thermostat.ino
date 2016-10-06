@@ -5,7 +5,6 @@
 // Chapter 12
 //-------------------------------------------------------------------
 
-
 // Include all modules
 
 #include <stdint.h>
@@ -23,6 +22,7 @@
 #include "tstat_gv.h"
 #include "tstat_iface.h"
 #include "tstat_lcd.h"
+#include "tstat_clk.h"
 
 // The encoder, RTC and display objects are initialized in tstat_gv.cpp as
 // enc, rtc and lcd, respectively.
@@ -33,143 +33,20 @@ void timerIsr() {
 }
 
 
-bool setLocalClock()
-{
-    bool rc = true;
-    bool clksetup = false;
-    int  clktry = 10;
-    int  clkstate = 0;
-
-    lcd->clear();
-    TitleDisp("Initializing", "clock", 1000);
-
-    while (!clksetup) {
-        delay(1000);
-        switch(clkstate) {
-            case 0:     // Start clock osc
-                rtc->haltRTC(0);
-                delay(50);
-
-                // See if RTC is running
-                if (rtc->haltRTC()) {
-                    clktry--;
-                    if (!clktry) {
-                        lcd->print("Clock stopped!");
-                        clkstate = 4;
-                    }
-                    else {
-                        clkstate = 0;
-                    }
-                }
-                else {
-                    lcd->clear();
-                    lcd->print("Clock working.");
-                    clkstate = 1;
-                    clktry = 10;
-                }
-                break;
-            case 1:     // Enable clock write
-                lcd->setCursor(0,1);
-                rtc->writeEN(0);
-                delay(50);
-
-                // See if RTC write is enabled
-                if (!rtc->writeEN()) {
-                    clktry--;
-                    if (!clktry) {
-                        lcd->print("Clock write fail");
-                        clkstate = 4;
-                    }
-                    else {
-                        clkstate = 1;
-                    }
-                }
-                else {
-                    lcd->clear();
-                    lcd->print("Clock write OK");
-                    clkstate = 2;
-                    clktry = 10;
-                }
-
-                break;
-            case 2:     // set RTC as time lib source
-                lcd->clear();
-                lcd->print("RTC Sync");
-                setSyncProvider(rtc->get);
-                delay(50);
-
-                lcd->setCursor(0,1);
-                if (timeStatus() != timeSet) {
-                    clktry--;
-                    if (!clktry) {
-                        lcd->print("Time sync FAIL!");
-                        clkstate = 4;
-                    }
-                    else
-                        clkstate = 2;
-                }
-                else {
-                    lcd->clear();
-                    lcd->print("Time sync OK");
-                    clkstate = 3;
-                }
-
-                break;
-            case 3:     // Success, exit loop
-                clksetup = true;
-                break;
-            case 4:     // Failure, RTC has issues
-                lcd->clear();
-                lcd->print("RTC init fail");
-                lcd->setCursor(0,1);
-                lcd->print("Reset needed");
-                delay(5000);
-                break;
-        }
-    }
-}
-
-
-// Read and decode LCD sheild button inputs
-int LCDbutton()
-{
-    //                        RIGHT, UP, DOWN, LEFT, SELECT
-    static int adc_btn_val[5] = {30, 150, 360, 535, 760};
-    int input;
-
-    input = analogRead(0);
-
-    if (input < adc_btn_val[0])
-        return LCD_BTN_RIGHT;
-    else if (input > adc_btn_val[0] && input <= adc_btn_val[1])
-        return LCD_BTN_UP;
-    else if (input > adc_btn_val[1] && input <= adc_btn_val[2])
-        return LCD_BTN_DOWN;
-    else if (input > adc_btn_val[2] && input <= adc_btn_val[3])
-        return LCD_BTN_LEFT;
-    else if (input > adc_btn_val[4] && input <= adc_btn_val[4])
-        return LCD_BTN_SELECT;
-    else
-        return LCD_BTN_NONE; // No valid button pressed
-}
-
-
 void setup()
 {
+    pinMode(RY1, OUTPUT);   // Relay 1 output
+    pinMode(RY2, OUTPUT);   // Relay 2 output
+    pinMode(RY3, OUTPUT);   // Relay 3 output
+    pinMode(RY4, OUTPUT);   // Relay 4 output
 
-
-    pinMode(RY1, OUTPUT);
-    pinMode(RY2, OUTPUT);
-    pinMode(RY3, OUTPUT);
-    pinMode(RY4, OUTPUT);
-
-    setRelay(0, false);
+    setRelay(0, false);     // Set all relays OFF
     setRelay(1, false);
     setRelay(2, false);
     setRelay(3, false);
 
-    pinMode(LCD_LED, OUTPUT);
-    digitalWrite(LCD_LED, HIGH);
+    pinMode(LCD_LED, OUTPUT);       // LCD backlight LED
+    digitalWrite(LCD_LED, HIGH);    // Enable the backlight
 
     // Initialize timer 1 and the ISR
     Timer1.initialize(1000);
@@ -206,46 +83,11 @@ void setup()
     gv_disp_active = true;
 }
 
-void displayActive()
-{
-    DispLED(true);
-    lcd->display();
-    gv_disp_active = true;
-    gv_lcd_led_strt = millis();
-}
 
 void loop()
 {
-    // Check the buttons on the LCD shield
-    int lcd_button = -1;
-
-    lcd_button = LCDbutton();
-
-    // Only do one button event no matter how long button is held
-    // down. Reset the button flag when button is released.
-
-    if (lcd_button != LCD_BTN_NONE) {
-        displayActive();    // enable display if button pressed
-        if (!gv_aux_button) {
-            gv_aux_button = true;
-            gv_show_adj = true;         // enable adj values display
-            if (lcd_button == LCD_BTN_SELECT) {
-                resetGVData();
-                gv_show_adj = false;    // but not for this
-            }
-            else if (lcd_button == LCD_BTN_UP)
-                gv_temp_adj += 0.5;
-            else if (lcd_button == LCD_BTN_DOWN)
-                gv_temp_adj -= 0.5;
-            else if (lcd_button == LCD_BTN_RIGHT)
-                gv_hum_adj++;
-            else if (lcd_button == LCD_BTN_LEFT)
-                gv_hum_adj--;
-        }
-    }
-    else
-        // if no button active then reset the button flag
-        gv_aux_button = false;
+    // Check LCD buttons
+    CheckLCDButtons();
 
     // Update temp and humidity
     GetTemps();
@@ -264,7 +106,8 @@ void loop()
         gv_scr4state   = SC4NULL;
         gv_scr5state   = SC5NULL;
 
-        if (lcd_button == LCD_BTN_NONE) {
+        // Check for LCD button active, only proceed if not
+        if (gv_lcd_button == LCD_BTN_NONE) {
             if (gv_disp_active) {
                 DispLED(true);
                 // If input not active, show status displays

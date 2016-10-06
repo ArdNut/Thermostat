@@ -8,6 +8,8 @@
 #ifndef TSTATLCD_H
 #define TSTATLCD_H
 
+void displayActive();
+
 void showMode(int col, int row);
 void showProf(int col, int row);
 

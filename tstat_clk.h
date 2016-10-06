@@ -1,21 +1,16 @@
 //-------------------------------------------------------------------
-// tstat_iface.h
+// tstat_clk.h
 //
 // Created for "Arduino: A Technical Reference", 2015, J. M. Hughes
 // Chapter 12
 //-------------------------------------------------------------------
 
-#ifndef TSTATIF_H
-#define TSTATIF_H
+#ifndef TSTATCLK_H
+#define TSTATCLK_H
 
-int  LCDbutton();
-void CheckLCDButtons();
-
-bool HandleInput();
-bool processInput();
-
-void getScreen3();
-void getScreen4();
-void getScreen5();
+bool setLocalClock();
+int GetEndTime();
+bool setTstatTime();
+void RTCUpdate();
 
 #endif

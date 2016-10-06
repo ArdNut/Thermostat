@@ -6,6 +6,7 @@
 //-------------------------------------------------------------------
 #include <DHT22.h>
 #include "tstat_gv.h"
+#include "tstat_ctrl.h"
 
 int convrange(double rangeC)
 {

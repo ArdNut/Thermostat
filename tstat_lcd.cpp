@@ -13,6 +13,17 @@
 #include "tstat_util.h"
 #include "tstat_ctrl.h"
 
+// Enable the LCD backlight and init the timer to disable it
+// when the time has elapsed
+void displayActive()
+{
+    DispLED(true);
+    lcd->display();
+    gv_disp_active = true;
+    gv_lcd_led_strt = millis();
+}
+
+
 void showMode(int col, int row)
 {
     lcd->setCursor(col, row);

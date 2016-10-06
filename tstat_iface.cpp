@@ -14,6 +14,64 @@
 #include "tstat_ctrl.h"
 #include <ClickEncoder.h>
 
+
+// Read and decode LCD sheild button inputs
+int LCDbutton()
+{
+    //                        RIGHT, UP, DOWN, LEFT, SELECT
+    static int adc_btn_val[5] = {30, 150, 360, 535, 760};
+    int input;
+
+    input = analogRead(0);
+
+    if (input < adc_btn_val[0])
+        return LCD_BTN_RIGHT;
+    else if (input > adc_btn_val[0] && input <= adc_btn_val[1])
+        return LCD_BTN_UP;
+    else if (input > adc_btn_val[1] && input <= adc_btn_val[2])
+        return LCD_BTN_DOWN;
+    else if (input > adc_btn_val[2] && input <= adc_btn_val[3])
+        return LCD_BTN_LEFT;
+    else if (input > adc_btn_val[4] && input <= adc_btn_val[4])
+        return LCD_BTN_SELECT;
+    else
+        return LCD_BTN_NONE; // No valid button pressed
+}
+
+
+// Check the buttons on the LCD shield
+void CheckLCDButtons()
+{
+    gv_lcd_button = LCDbutton();
+
+    // Only do one button event no matter how long button is held
+    // down. Reset the button flag when button is released.
+    if (gv_lcd_button != LCD_BTN_NONE) {
+        displayActive();    // enable display if button pressed
+        if (!gv_aux_button) {
+            gv_aux_button = true;
+            gv_show_adj = true;         // enable adj values display
+            if (gv_lcd_button == LCD_BTN_SELECT) {
+                resetGVData();
+                gv_show_adj = false;    // but not for this
+            }
+            else if (gv_lcd_button == LCD_BTN_UP)
+                gv_temp_adj += 0.5;
+            else if (gv_lcd_button == LCD_BTN_DOWN)
+                gv_temp_adj -= 0.5;
+            else if (gv_lcd_button == LCD_BTN_RIGHT)
+                gv_hum_adj++;
+            else if (gv_lcd_button == LCD_BTN_LEFT)
+                gv_hum_adj--;
+        }
+    }
+    else {
+        // if no button active then reset the button flag
+        gv_aux_button = false;
+    }
+}
+
+
 bool HandleInput()
 {
     bool rc = false;

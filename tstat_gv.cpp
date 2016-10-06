@@ -70,8 +70,9 @@ uint8_t     gv_currmin    = 0;          //
 uint8_t     gv_currsec    = 0;          //
 
 bool        gv_input_active=false;      // true if input entry active
-
+int         gv_lcd_button = -1;
 uint8_t     gv_curr_screen = 0;         // current active display screen
+
 uint8_t     gv_dhtchk    = DHT_ERROR_NONE;  // DHT response status
 
 double      gv_temp_set  = DEF_TEMP_SET;    // Temperature set point in C
